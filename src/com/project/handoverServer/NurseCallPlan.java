@@ -8,11 +8,11 @@ import java.io.FileWriter;
 import org.dom4j.io.*;
 import org.dom4j.*;
 
-public class NurseAssignmentDAO {
+public class NurseCallPlan {
 	
 	private static final String CALLPLANFILE = "callplan.xml";
 	
-	private NurseAssignmentDAO() {};
+	private NurseCallPlan() {};
 	
 	public static synchronized boolean editCallPlan(String room, String nurse){
 		if(room == null || nurse == null)

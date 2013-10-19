@@ -16,18 +16,8 @@ public class Server {
 			
 			while(true) {
 				Socket clientSocket = serverSocket.accept();
-				
-				InputStreamReader streamReader = new InputStreamReader(clientSocket.getInputStream());
-				BufferedReader reader = new BufferedReader(streamReader);
-				PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
-				
-				String message = reader.readLine();
-				System.out.println("New request: " + message);
-				
-				String[] persons = message.split(", ");
-				
-				writer.println(persons[0] + " handed over!");
-				writer.close();
+				Thread requestHandler = new Thread(new RequestHandler(clientSocket));
+				requestHandler.start();
 			}
 		} catch(Exception e){
 			e.printStackTrace();
