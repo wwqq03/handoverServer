@@ -63,8 +63,9 @@ public class RequestHandler implements Runnable{
 	}
 	
 	private String processLogin(Request request){
-		if(Authenticator.authenticate(request.getName(), request.getPassword())){
-			return "200";
+		String auth = Authenticator.authenticate(request.getName(), request.getPassword());
+		if(!auth.equals(Authenticator.FAILED)){
+			return "200," + auth;
 		}
 		else{
 			return "403";

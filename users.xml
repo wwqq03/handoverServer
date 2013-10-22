@@ -1,10 +1,12 @@
 <users>
     <user>
-    	<name>Rose</name>
+    	<name>rose</name>
     	<password>123456</password>
+    	<role>C</role>
     </user>
     <user>
-    	<name>Susan</name>
+    	<name>susan</name>
     	<password>111111</password>
+    	<role>N</role>
     </user>
 </users>

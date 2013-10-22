@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <callplan>
         <room uri="221@fred.item.ntnu.no">
-            <nurse rank="1">nurse1@fred.item.ntnu.no</nurse>
+            <nurse rank="1">rose@fred.item.ntnu.no</nurse>
             <nurse rank="2">nurse2@fred.item.ntnu.no</nurse>
             <wall-panel>wall_panel_221@fred.item.ntnu.no</wall-panel>
         </room>
         <room uri="222@fred.item.ntnu.no">
-            <nurse rank="1">nurse3@fred.item.ntnu.no</nurse>
+            <nurse rank="1">rose@fred.item.ntnu.no</nurse>
             <nurse rank="2">nurse4@fred.item.ntnu.no</nurse>
             <wall-panel>wall_panel_222@fred.item.ntnu.no</wall-panel>
         </room>
