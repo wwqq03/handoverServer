@@ -54,7 +54,8 @@ public class RequestHandler implements Runnable{
 	}
 	
 	private String processHandover(Request request){
-		if(NurseCallPlan.editCallPlan(request.getRoom(), request.getNurse())){
+		NurseCallPlan ncp = new NurseCallPlan();
+		if(ncp.editCallPlan(request.getRoom(), request.getNurse())){
 			return "Success for " + request.getRoom();
 		}
 		else{
@@ -63,7 +64,8 @@ public class RequestHandler implements Runnable{
 	}
 	
 	private String processLogin(Request request){
-		String auth = Authenticator.authenticate(request.getName(), request.getPassword());
+		Authenticator authenticator = new Authenticator();
+		String auth = authenticator.authenticate(request.getName(), request.getPassword());
 		if(!auth.equals(Authenticator.FAILED)){
 			return "200," + auth;
 		}

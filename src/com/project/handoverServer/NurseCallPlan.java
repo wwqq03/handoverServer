@@ -2,22 +2,30 @@ package com.project.handoverServer;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.dom4j.io.*;
 import org.dom4j.*;
 
 public class NurseCallPlan {
 	
-	private static final String CALLPLANFILE = "callplan.xml";
+	private String CALLPLANFILE;
 	
-	private NurseCallPlan() {};
+	public NurseCallPlan() {
+		CALLPLANFILE = Server.CALLPLANFILE;
+	};
 	
-	public static synchronized boolean editCallPlan(String room, String nurse){
+	public synchronized boolean editCallPlan(String room, String nurse){
 		if(room == null || nurse == null)
 			return false;
+		if(CALLPLANFILE == null || CALLPLANFILE.isEmpty())
+			return false;
 		try{
+			
 			SAXReader reader = new SAXReader();
 			Document  document = reader.read(new File(CALLPLANFILE));
 			
@@ -67,7 +75,7 @@ public class NurseCallPlan {
 		return false;
 	}
 	
-	private static String getNameFromUri(String uri) {
+	private String getNameFromUri(String uri) {
 		if(uri == null)
 			return null;
 		if(!uri.contains("@"))
@@ -76,7 +84,7 @@ public class NurseCallPlan {
 		return names[0];
 	}
 	
-	private static void printCallPlan(Element callplan){
+	private void printCallPlan(Element callplan){
 		if(callplan == null)
 			return;
 		System.out.println("----------------------------------------------------------------------");

@@ -1,8 +1,11 @@
 package com.project.handoverServer;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -10,16 +13,22 @@ import org.dom4j.io.SAXReader;
 
 public class Authenticator {
 	
-	private static final String USERSFILE = "users.xml";
+	private String USERSFILE;
 	public static final String FAILED = "F";
 	public static final String SUCCESS_CHIEF = "C";
 	public static final String SUCCESS_NURSE = "N";
 	
-	private Authenticator () {};
+	public Authenticator () {
+		USERSFILE = Server.USERSFILE;
+	};
 	
-	public static String authenticate(String name, String password){
+	public String authenticate(String name, String password){
 		if(name == null || password == null)
 			return FAILED;
+		if(USERSFILE == null || USERSFILE.isEmpty()){
+			System.out.println("Error:USERFILE is empty");
+			return FAILED;
+		}
 		
 		try{
 			SAXReader reader = new SAXReader();
