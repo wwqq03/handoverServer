@@ -54,6 +54,7 @@ public class NurseCallPlan {
 					writer.write(document);
 					writer.close();
 					
+					printCallPlan(callplan);
 					return true;
 				}
 			}
@@ -73,6 +74,52 @@ public class NurseCallPlan {
 			return null;
 		String[] names = uri.split("@");
 		return names[0];
+	}
+	
+	private static void printCallPlan(Element callplan){
+		if(callplan == null)
+			return;
+		System.out.println("----------------------------------------------------------------------");
+		System.out.println("Updated call plan:");
+		List<Element> roomList = callplan.elements("room");
+		
+		for(Iterator<Element> itRoom = roomList.iterator(); itRoom.hasNext();){
+			String roomInfo = null;
+			Element roomElement = itRoom.next();
+			Attribute uriAttribute = roomElement.attribute("uri");
+			if(uriAttribute == null)
+				continue;
+			
+			String uriString = uriAttribute.getText();
+			String room = getNameFromUri(uriString);
+			if(room == null || room.isEmpty())
+				continue;
+			
+			roomInfo = "Room: " + room + "\t";
+			
+			List<Element> nurseList = roomElement.elements("nurse");
+			for(Iterator<Element> itNurse = nurseList.iterator(); itNurse.hasNext();){
+				Element nurseElement = itNurse.next();
+				Attribute rankAttribute = nurseElement.attribute("rank");
+				
+				if(rankAttribute == null)
+					continue;
+				
+				String rank = rankAttribute.getText();
+				if(rank == null || rank.isEmpty())
+					continue;
+				
+				roomInfo = roomInfo + "Nurse" + rank + ": ";
+				String nurseUri = nurseElement.getText();
+				String nurse = getNameFromUri(nurseUri);
+				roomInfo = roomInfo + nurse + "\t";
+			}
+			
+			if(roomInfo != null && !roomInfo.isEmpty()){
+				System.out.println(roomInfo);
+			}
+		}
+		System.out.println("----------------------------------------------------------------------");
 	}
 
 }
