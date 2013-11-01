@@ -22,20 +22,27 @@ public class RequestHandler implements Runnable{
 			BufferedReader reader = new BufferedReader(streamReader);			
 			String message = reader.readLine();
 			
-			String response = processMessage(message);
+			Response response = processMessage(message);
 			if(response == null){
-				response = "Bad request!";
+				response = new Response(Response.handoverResponse);
+				response.setStatus("400");
+				response.setMessage("Bad request!");
+			}
+			
+			if(!response.isLegal()){
+				response.setStatus("500");
+				response.setMessage("Internal Server Error");
 			}
 			
 			PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
-			writer.println(response);
+			writer.println(response.toXML());
 			writer.close();
 		} catch(Exception e){
 			e.printStackTrace();
 		}
 	}
 	
-	private String processMessage(String plainRequest){
+	private Response processMessage(String plainRequest){
 		if(plainRequest == null || plainRequest.isEmpty())
 			return null;
 		Request request = new Request(plainRequest);
@@ -50,28 +57,35 @@ public class RequestHandler implements Runnable{
 			return processLogin(request);
 		}
 		
-		return "Illegal request!";
+		return null;
 	}
 	
-	private String processHandover(Request request){
+	private Response processHandover(Request request){
+		Response response = new Response(request.getRequestType());
 		NurseCallPlan ncp = new NurseCallPlan();
 		if(ncp.editCallPlan(request.getRoom(), request.getNurse())){
-			return "Success for " + request.getRoom();
+			response.setStatus("200");
 		}
 		else{
-			return "Failed for " + request.getRoom();
+			response.setStatus("404");
+			response.setMessage("Room does not exist");
 		}
+		return response;
 	}
 	
-	private String processLogin(Request request){
+	private Response processLogin(Request request){
+		Response response = new Response(request.getRequestType());
 		Authenticator authenticator = new Authenticator();
 		String auth = authenticator.authenticate(request.getName(), request.getPassword());
 		if(!auth.equals(Authenticator.FAILED)){
-			return "200," + auth;
+			response.setStatus("200");
+			response.setRole(auth);
 		}
 		else{
-			return "403";
+			response.setStatus("403");
+			response.setMessage("Failed logging in");
 		}
+		return response;
 	}
 
 }
