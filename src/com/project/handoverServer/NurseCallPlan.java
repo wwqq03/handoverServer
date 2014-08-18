@@ -7,6 +7,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import no.ntnu.item.nursecall.common.model.CallPlan;
 
 import org.dom4j.io.*;
 import org.dom4j.*;
@@ -18,6 +24,29 @@ public class NurseCallPlan {
 	public NurseCallPlan() {
 		CALLPLANFILE = Server.CALLPLANFILE;
 	};
+	
+	public synchronized CallPlan retrieveCallPlan()
+	{
+		if(CALLPLANFILE == null || CALLPLANFILE.isEmpty())
+			return null;
+		
+		try
+		{
+			String content = readFile(CALLPLANFILE, Charset.defaultCharset());
+			
+			CallPlan cp = CallPlan.parseXML(content);
+			
+			return cp;
+		}
+		catch(Exception e) {e.printStackTrace(); return null;}
+	}
+	
+	static String readFile(String path, Charset encoding) 
+			  throws IOException 
+	{
+			  byte[] encoded = Files.readAllBytes(Paths.get(path));
+			  return encoding.decode(ByteBuffer.wrap(encoded)).toString();
+	}
 	
 	public synchronized boolean editCallPlan(String room, String nurse){
 		if(room == null || nurse == null)
@@ -128,6 +157,23 @@ public class NurseCallPlan {
 			}
 		}
 		System.out.println("----------------------------------------------------------------------");
+	}
+
+	public void storeCallPlan(CallPlan cp) {
+		File file = new File(CALLPLANFILE);
+		FileWriter fooWriter;
+		try {
+			fooWriter = new FileWriter(file, false);
+			fooWriter.write(cp.createXML(true));
+			fooWriter.close();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // true to append
+		                                                     // false to overwrite.
+		
+
 	}
 
 }

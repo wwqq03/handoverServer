@@ -9,4 +9,14 @@
     	<password>111111</password>
     	<role>N</role>
     </user>
+    <user>
+    	<name>nurse1</name>
+    	<password>111</password>
+    	<role>N</role>
+    </user>
+    <user>
+    	<name>nurse2</name>
+    	<password>222</password>
+    	<role>N</role>
+    </user>
 </users>

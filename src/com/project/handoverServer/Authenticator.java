@@ -3,9 +3,16 @@ package com.project.handoverServer;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
+import no.ntnu.item.nursecall.common.model.CallPlan;
+import no.ntnu.item.nursecall.common.model.NurseList;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -21,6 +28,28 @@ public class Authenticator {
 	public Authenticator () {
 		USERSFILE = Server.USERSFILE;
 	};
+	public synchronized NurseList retrieveUserList()
+	{
+		if(USERSFILE == null || USERSFILE.isEmpty())
+			return null;
+		
+		try
+		{
+			String content = readFile(USERSFILE, Charset.defaultCharset());
+			
+			NurseList n = NurseList.parseXML(content);
+			
+			return n;
+		}
+		catch(Exception e) {e.printStackTrace(); return null;}
+	}
+	
+	static String readFile(String path, Charset encoding) 
+			  throws IOException 
+	{
+			  byte[] encoded = Files.readAllBytes(Paths.get(path));
+			  return encoding.decode(ByteBuffer.wrap(encoded)).toString();
+	}
 	
 	public String authenticate(String name, String password){
 		if(name == null || password == null)

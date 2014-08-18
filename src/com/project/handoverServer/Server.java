@@ -12,6 +12,7 @@ public class Server {
 	
 	public static String CALLPLANFILE;
 	public static String USERSFILE;
+	public static String PORT;
 	
 	public void go() {
 		  
@@ -21,6 +22,7 @@ public class Server {
 			p.load(inputFile);
 			CALLPLANFILE = p.getProperty("callplan");
 			USERSFILE = p.getProperty("users");
+			PORT = p.getProperty("port");
 			if(CALLPLANFILE == null || CALLPLANFILE.isEmpty()){
 				System.out.println("Failed to configure call plan file");
 				return;
@@ -34,8 +36,8 @@ public class Server {
 		}
 		
 		try {
-			ServerSocket serverSocket = new ServerSocket(5000);
-			System.out.println("System running on port 5000");
+			ServerSocket serverSocket = new ServerSocket(Integer.parseInt(PORT));
+			System.out.println("System running on port " + PORT);
 			
 			while(true) {
 				Socket clientSocket = serverSocket.accept();
