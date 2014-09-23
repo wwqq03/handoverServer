@@ -64,6 +64,7 @@ public class NurseCallPlan {
 			for(Iterator<Element> itRoom = roomList.iterator(); itRoom.hasNext();){
 				Element roomElement = itRoom.next();
 				Attribute uriAttribute = roomElement.attribute("uri");
+				Attribute lockedAttribute = roomElement.attribute("locked");
 				if(uriAttribute == null)
 					continue;
 				
@@ -71,6 +72,9 @@ public class NurseCallPlan {
 				if(!room.equals(getNameFromUri(uriString)))
 					continue;
 				
+				if (lockedAttribute.getText().equals("true"))
+					return true;
+					
 				List<Element> nurseList = roomElement.elements("nurse");
 				for(Iterator<Element> itNurse = nurseList.iterator(); itNurse.hasNext();){
 					Element nurseElement = itNurse.next();

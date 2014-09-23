@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.StringTokenizer;
 
 import javax.xml.transform.Templates;
 
@@ -94,12 +95,18 @@ public class RequestHandler implements Runnable{
 	
 	private Response processHandover(Request request){
 		Response response = new Response(request.getRequestType());
-		if(ncp.editCallPlan(request.getRoom(), request.getNurse())){
-			response.setStatus("200");
-		}
-		else{
-			response.setStatus("404");
-			response.setMessage("Room does not exist");
+		StringTokenizer st = new StringTokenizer(request.getRoom(), ";");
+		while(st.hasMoreElements())
+		{
+			if(ncp.editCallPlan(st.nextToken(), request.getNurse())){
+				response.setStatus("200");
+			}
+			else
+			{
+				response.setStatus("404");
+				response.setMessage("Room does not exist");
+				break;
+			}
 		}
 		return response;
 	}
