@@ -2,17 +2,17 @@ package com.project.handoverServer;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
+import java.util.StringTokenizer;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import no.ntnu.item.nursecall.common.model.CallPlan;
+import no.ntnu.item.nursecall.common.callplan.model.CallPlan;
+import no.ntnu.item.nursecall.common.callplan.model.Room;
 
 import org.dom4j.io.*;
 import org.dom4j.*;
@@ -48,6 +48,68 @@ public class NurseCallPlan {
 			  return encoding.decode(ByteBuffer.wrap(encoded)).toString();
 	}
 	
+
+	public synchronized boolean editCallPlan(String rooms, String nurse)
+	{
+		StringTokenizer st = new StringTokenizer(rooms, ";");
+		CallPlan plan = retrieveCallPlan();
+		boolean success = false;
+		boolean update = false;
+		while(st.hasMoreElements())
+		{
+			String room = st.nextToken();
+			for (Room r : plan.rooms)
+			{
+				if (room.contains(r.getRoomNumber()))
+				{
+					if (r.locked == true)
+					{
+						success = true;
+						break;
+					}
+					
+					if (r.getNurseAt(0) != null)
+					{
+						if (r.getNurseAt(0).uri.contains(nurse))
+						{
+							success = true;
+							break;
+						}
+						
+						String primaryNurseUri = r.getNurseAt(0).uri;
+						String[] temp = primaryNurseUri.split("@");
+						if (temp.length < 2)
+						{
+							success = false;
+							break;
+						}
+						else
+						{
+							r.getNurseAt(0).uri = nurse + "@" + temp[1];
+							if (r.getNurseAt(1) != null)
+							{
+								r.getNurseAt(1).uri = primaryNurseUri;
+							}
+							success = true;
+							update = true;
+						}
+						
+					}
+				}
+			}
+			if (success == false)
+				break;
+		}
+		
+		if (update == true)
+		{
+			storeCallPlan(plan);
+		}
+		
+		return success;
+	}
+	
+	/*
 	public synchronized boolean editCallPlan(String room, String nurse){
 		if(room == null || nurse == null)
 			return false;
@@ -99,14 +161,13 @@ public class NurseCallPlan {
 					return true;
 				}
 			}
-			
-			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		
 		return false;
 	}
+	*/
 	
 	private String getNameFromUri(String uri) {
 		if(uri == null)

@@ -8,10 +8,8 @@ import java.util.StringTokenizer;
 
 import javax.xml.transform.Templates;
 
-import no.ntnu.item.nursecall.callplan.common.communication.Request;
-import no.ntnu.item.nursecall.callplan.common.communication.Response;
-import no.ntnu.item.nursecall.common.model.CallPlan;
-import no.ntnu.item.nursecall.common.model.NurseList;
+import no.ntnu.item.nursecall.common.callplan.communication.*;
+import no.ntnu.item.nursecall.common.callplan.model.*;
 
 public class RequestHandler implements Runnable{
 	
@@ -95,6 +93,17 @@ public class RequestHandler implements Runnable{
 	
 	private Response processHandover(Request request){
 		Response response = new Response(request.getRequestType());
+		if(ncp.editCallPlan(request.getRoom(), request.getNurse())){
+			response.setStatus("200");
+		}
+		else
+		{
+			response.setStatus("404");
+			response.setMessage("Something went wrong editing the plan");
+			//break;
+		}
+		
+		/*
 		StringTokenizer st = new StringTokenizer(request.getRoom(), ";");
 		while(st.hasMoreElements())
 		{
@@ -108,6 +117,7 @@ public class RequestHandler implements Runnable{
 				break;
 			}
 		}
+		*/
 		return response;
 	}
 	

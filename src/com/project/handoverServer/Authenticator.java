@@ -11,8 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import no.ntnu.item.nursecall.common.model.CallPlan;
-import no.ntnu.item.nursecall.common.model.NurseList;
+import no.ntnu.item.nursecall.common.callplan.model.CallPlan;
+import no.ntnu.item.nursecall.common.callplan.model.NurseList;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
